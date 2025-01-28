@@ -1,52 +1,102 @@
 import React from "react";
-import { useCreateBooking } from "../../hooks/useBookings";
-import { Event } from "../../types";
-import { useAuth } from "../../contexts/AuthContext";
-import { Link } from "react-router-dom";
+import { useBookings } from "../../hooks/useBookings";
 import { toast } from "react-hot-toast";
 
 interface BookingButtonProps {
-  event: Event;
+  eventId: string;
+  isUserBooked: boolean;
+  bookingId?: string;
+  isFull: boolean;
+  isPast: boolean;
 }
 
-export const BookingButton: React.FC<BookingButtonProps> = ({ event }) => {
-  const { isAuthenticated } = useAuth();
-  const createBooking = useCreateBooking();
-
-  if (!isAuthenticated) {
-    return (
-      <Link
-        to="/login"
-        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#880090] hover:bg-[#b05eb3]"
-      >
-        Sign in to Book
-      </Link>
-    );
-  }
+const BookingButton = ({
+  eventId,
+  isUserBooked,
+  bookingId,
+  isFull,
+  isPast,
+}: BookingButtonProps) => {
+  const {
+    createBooking,
+    cancelBooking,
+    isCreatingBooking,
+    isCancellingBooking,
+  } = useBookings();
 
   const handleBooking = async () => {
     try {
-      await createBooking.mutateAsync({ eventId: event.id });
-      toast.success("Event booked successfully!");
+      if (isUserBooked && bookingId) {
+        await cancelBooking(bookingId);
+      } else {
+        await createBooking(eventId);
+      }
     } catch (error) {
-      toast.error("Failed to book event");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     }
   };
 
-  const isFullyBooked = event.currentBookings >= event.capacity;
-  const isBookable = event.status === "Published" && !isFullyBooked;
+  if (isPast) {
+    return (
+      <button
+        disabled
+        className="w-full px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 rounded-md cursor-not-allowed"
+      >
+        Event has ended
+      </button>
+    );
+  }
+
+  if (isFull && !isUserBooked) {
+    return (
+      <button
+        disabled
+        className="w-full px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 rounded-md cursor-not-allowed"
+      >
+        Event is full
+      </button>
+    );
+  }
 
   return (
     <button
       onClick={handleBooking}
-      disabled={!isBookable || createBooking.isPending}
-      className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400"
+      disabled={isCreatingBooking || isCancellingBooking}
+      className={`w-full px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+        isUserBooked
+          ? "bg-red-600 hover:bg-red-700 focus:ring-red-500"
+          : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500"
+      } disabled:opacity-50 disabled:cursor-not-allowed`}
     >
-      {createBooking.isPending
-        ? "Booking..."
-        : isFullyBooked
-        ? "Fully Booked"
-        : "Book Event"}
+      {isCreatingBooking || isCancellingBooking ? (
+        <span className="flex items-center justify-center">
+          <svg className="w-5 h-5 mr-2 animate-spin" viewBox="0 0 24 24">
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+              fill="none"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
+          </svg>
+          {isUserBooked ? "Cancelling..." : "Booking..."}
+        </span>
+      ) : (
+        <span>{isUserBooked ? "Cancel Booking" : "Book Now"}</span>
+      )}
     </button>
   );
 };
+
+export default BookingButton;

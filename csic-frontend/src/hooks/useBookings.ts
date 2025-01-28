@@ -1,43 +1,61 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../services/api";
+import { eventsApi } from "../services/api";
 import { EventBooking } from "../types";
 
-export const useMyBookings = () => {
-  return useQuery<EventBooking[]>({
-    queryKey: ["bookings", "my"],
-    queryFn: async () => {
-      const { data } = await api.get("/eventbookings/my");
-      return data;
-    },
-  });
-};
-
-export const useCreateBooking = () => {
+export const useBookings = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async ({ eventId }: { eventId: string }) => {
-      const { data } = await api.post(`/events/${eventId}/bookings`, {
-        eventId,
-      });
-      return data;
-    },
+  const bookingsQuery = useQuery<EventBooking[]>({
+    queryKey: ["bookings", "my"],
+    queryFn: () => eventsApi.getMyBookings(),
+  });
+
+  const createBookingMutation = useMutation({
+    mutationFn: (eventId: string) => eventsApi.createBooking(eventId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["bookings", "my"] });
       queryClient.invalidateQueries({ queryKey: ["events"] });
     },
   });
-};
 
-export const useCancelBooking = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (bookingId: string) => {
-      await api.put(`/eventbookings/${bookingId}/cancel`);
-    },
+  const cancelBookingMutation = useMutation({
+    mutationFn: (bookingId: string) => eventsApi.cancelBooking(bookingId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["bookings", "my"] });
+      queryClient.invalidateQueries({ queryKey: ["events"] });
     },
   });
+
+  // Helper functions for cleaner component code
+  const createBooking = async (eventId: string) => {
+    await createBookingMutation.mutateAsync(eventId);
+  };
+
+  const cancelBooking = async (bookingId: string) => {
+    await cancelBookingMutation.mutateAsync(bookingId);
+  };
+
+  return {
+    // Query state
+    bookings: bookingsQuery.data,
+    isLoadingBookings: bookingsQuery.isLoading,
+    bookingsError: bookingsQuery.error,
+
+    // Create booking
+    createBooking,
+    isCreatingBooking: createBookingMutation.isPending,
+    createBookingError: createBookingMutation.error,
+
+    // Cancel booking
+    cancelBooking,
+    isCancellingBooking: cancelBookingMutation.isPending,
+    cancelBookingError: cancelBookingMutation.error,
+
+    // Raw mutations if needed
+    createBookingMutation,
+    cancelBookingMutation,
+
+    // Raw query if needed
+    bookingsQuery,
+  };
 };

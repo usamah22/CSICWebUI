@@ -1,9 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import api, { authApi } from "../services/api";
+import { authApi } from "../services/api";
+import { AuthResponse } from "../types";
+
+interface User {
+  id: string;
+  email: string;
+  fullName?: string;
+}
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  user: any | null;
+  user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
@@ -15,14 +22,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
+    const userId = localStorage.getItem("userId");
+    const userEmail = localStorage.getItem("userEmail");
+
+    if (token && userId && userEmail) {
       setIsAuthenticated(true);
-      // Fetch user profile
+      setUser({
+        id: userId,
+        email: userEmail,
+      });
     }
     setIsLoading(false);
   }, []);
@@ -30,18 +43,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (email: string, password: string) => {
     try {
       const response = await authApi.login({ email, password });
-      // Handle successful login
       localStorage.setItem("token", response.token);
+      localStorage.setItem("userId", response.userId);
+      localStorage.setItem("userEmail", response.email);
+
       setIsAuthenticated(true);
-      // ... other auth logic
+      setUser({
+        id: response.userId,
+        email: response.email,
+      });
     } catch (error) {
-      // Let the error propagate to the component
       throw error;
     }
   };
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userEmail");
     setIsAuthenticated(false);
     setUser(null);
   };

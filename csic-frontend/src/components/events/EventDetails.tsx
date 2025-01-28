@@ -1,58 +1,107 @@
 import React from "react";
-import { useEvent } from "../../hooks/useEvents";
-import { useParams } from "react-router-dom";
-import { FeedbackList } from "../feedback/FeedbackList";
-import { BookingButton } from "../bookings/BookingButton";
-import { Spinner } from "../ui/Spinner";
-import { EventStatus } from "../ui/EventStatus";
+import { format } from "date-fns";
+import { CalendarIcon, MapPinIcon, UsersIcon, ClockIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import BookingButton from "../bookings/BookingButton";
 
-export const EventDetails: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const { data: event, isLoading } = useEvent(id!);
+interface EventDetailsProps {
+  event: {
+    id: string;
+    title: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+    location: string;
+    capacity: number;
+    availableSpots: number;
+    imageUrl?: string;
+    status: "upcoming" | "ongoing" | "completed" | "cancelled";
+    category?: string;
+  };
+}
 
-  if (isLoading) return <Spinner />;
-  if (!event) return <div>Event not found</div>;
-
-  function formatDateTime(startDate: string): React.ReactNode {
-    throw new Error("Function not implemented.");
-  }
+export const EventDetails: React.FC<EventDetailsProps> = ({ event }) => {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "upcoming":
+        return "bg-blue-100 text-blue-800";
+      case "ongoing":
+        return "bg-green-100 text-green-800";
+      case "completed":
+        return "bg-gray-100 text-gray-800";
+      case "cancelled":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
 
   return (
-    <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+    <article className="bg-white rounded-lg shadow-md overflow-hidden">
+      {event.imageUrl && (
+        <div className="relative h-64">
+          <img
+            src={event.imageUrl}
+            alt={event.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute top-4 right-4">
+            <Badge className={getStatusColor(event.status)}>
+              {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
+            </Badge>
+          </div>
+        </div>
+      )}
+
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4">{event.title}</h1>
-        <div className="prose max-w-none mb-6">
-          <p>{event.description}</p>
+        <header className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="text-3xl font-bold text-gray-900">{event.title}</h1>
+          </div>
+          {event.category && (
+            <Badge variant="outline" className="mb-2">
+              {event.category}
+            </Badge>
+          )}
+        </header>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div className="flex items-center text-gray-600">
+            <CalendarIcon className="w-5 h-5 mr-2" />
+            <div>
+              <div>{format(new Date(event.startDate), "PPP")}</div>
+              <div>{format(new Date(event.startDate), "p")}</div>
+            </div>
+          </div>
+
+          <div className="flex items-center text-gray-600">
+            <ClockIcon className="w-5 h-5 mr-2" />
+            <span>
+              {format(new Date(event.startDate), "p")} -{" "}
+              {format(new Date(event.endDate), "p")}
+            </span>
+          </div>
+
+          <div className="flex items-center text-gray-600">
+            <MapPinIcon className="w-5 h-5 mr-2" />
+            <span>{event.location}</span>
+          </div>
+
+          <div className="flex items-center text-gray-600">
+            <UsersIcon className="w-5 h-5 mr-2" />
+            <span>
+              {event.availableSpots} spots available of {event.capacity}
+            </span>
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Date & Time</h3>
-            <p className="mt-1">{formatDateTime(event.startDate)}</p>
+        <div className="prose max-w-none">
+          <h2 className="text-xl font-semibold mb-2">About this event</h2>
+          <div className="text-gray-700 whitespace-pre-wrap">
+            {event.description}
           </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Location</h3>
-            <p className="mt-1">{event.location}</p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Capacity</h3>
-            <p className="mt-1">
-              {event.currentBookings} / {event.capacity}
-            </p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Status</h3>
-            <EventStatus status={event.status} />
-          </div>
-        </div>
-
-        <BookingButton event={event} />
-
-        <div className="mt-8">
-          <h2 className="text-xl font-bold mb-4">Feedback</h2>
-          <FeedbackList eventId={event.id} />
         </div>
       </div>
-    </div>
+    </article>
   );
 };

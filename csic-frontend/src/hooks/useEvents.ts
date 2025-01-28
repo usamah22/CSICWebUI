@@ -1,14 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../services/api";
+import { eventsApi } from "../services/api";
 import { Event } from "../types";
 
 export const useEvents = () => {
-  return useQuery<Event[]>({
+  return useQuery({
     queryKey: ["events"],
-    queryFn: async () => {
-      const { data } = await api.get("/events");
-      return data;
-    },
+    queryFn: eventsApi.getEvents,
   });
 };
 
@@ -40,11 +38,18 @@ export const useCreateBooking = () => {
 };
 
 export const useEvent = (id: string) => {
-  return useQuery<Event>({
+  return useQuery({
     queryKey: ["events", id],
     queryFn: async () => {
-      const { data } = await api.get(`/events/${id}`);
-      return data;
+      try {
+        const data = await eventsApi.getEvent(id);
+        console.log("Event data received:", data); // Debug log
+        return data;
+      } catch (error) {
+        console.error("Error fetching event:", error);
+        throw error;
+      }
     },
+    enabled: !!id, // Only run the query if we have an ID
   });
 };

@@ -10,6 +10,7 @@ import EventsPage from "./pages/EventsPage";
 import EventDetailPage from "./pages/EventDetailPage";
 import MyBookingsPage from "./pages/MyBookingsPage";
 import LoginPage from "./pages/LoginPage";
+import CreateEventForm from "./components/events/CreateEventForm";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ function App() {
             <Routes>
               <Route path="/" element={<EventsPage />} />
               <Route path="/events" element={<EventsPage />} />
+              <Route path="/events/create" element={<CreateEventForm />} />
               <Route path="/events/:id" element={<EventDetailPage />} />
               <Route
                 path="/bookings"
