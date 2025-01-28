@@ -1,6 +1,7 @@
 import axios from "axios";
 import {
   AuthResponse,
+  BookingStatus,
   Event,
   EventBooking,
   EventDetail,
@@ -79,11 +80,42 @@ const mapEventStatus = (status: any): EventStatus => {
   }
 };
 
+const mapBookingStatus = (status: any): BookingStatus => {
+  switch (status) {
+    case "Draft":
+    case "Published":
+    case "Cancelled":
+    case "Completed":
+      return status as BookingStatus;
+    case 0:
+      return "Confirmed";
+    case 1:
+      return "Cancelled";
+    case 2:
+      return "Attended";
+    case 3:
+      return "NoShow";
+    default:
+      throw new Error(`Unknown status: ${status}`);
+  }
+};
+
 const transformEvent = (event: any): Event => ({
   ...event,
   status: mapEventStatus(event.status),
   availableSpots: event.capacity - event.currentBookings,
   imageUrl: event.imageUrl || undefined,
+});
+
+const transformBooking = (booking: any): EventBooking => ({
+  ...booking,
+  status: mapBookingStatus(booking.status),
+  bookedAt: new Date(booking.bookedAt).toISOString(),
+  cancelledAt: booking.cancelledAt
+    ? new Date(booking.cancelledAt).toISOString()
+    : undefined,
+  user: booking.user || undefined,
+  event: transformEvent(booking.event),
 });
 
 export const eventsApi = {
@@ -167,8 +199,13 @@ export const eventsApi = {
   },
 
   getMyBookings: async (): Promise<EventBooking[]> => {
-    const response = await api.get<EventBooking[]>("/eventbookings/my");
-    return response.data;
+    try {
+      const response = await api.get<EventBooking[]>("/eventbookings/my");
+      return response.data.map(transformBooking); // Apply transformBooking to each booking
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+      throw error;
+    }
   },
 };
 
