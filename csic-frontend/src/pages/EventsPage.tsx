@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useEvents } from "../hooks/useEvents";
 import { EventCard } from "../components/events/EventCard";
 import { Spinner } from "../components/ui/Spinner";
+import { Button } from "@/components/ui/button";
+import { EventList } from "@/components/events/EventList";
+import EventCalendar from "@/components/events/EventCalendar";
 
 const EventsPage: React.FC = () => {
   const { data: events, isLoading } = useEvents();
+  const [viewMode, setViewMode] = useState<"list" | "calendar">("list"); // Toggle state
 
   if (isLoading) {
     return (
@@ -19,14 +23,21 @@ const EventsPage: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Events</h1>
+        <Button
+          onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
+          variant="outline"
+        >
+          Switch to {viewMode === "list" ? "Calendar View" : "List View"}
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {events?.map((event) => (
+      <div className="">
+        {/* {events?.map((event) => (
           <Link key={event.id} to={`/events/${event.id}`}>
             <EventCard event={event} />
           </Link>
-        ))}
+        ))} */}
+        {viewMode === "list" ? <EventList /> : <EventCalendar />}
       </div>
       <div className="pt-8">
         <Link
