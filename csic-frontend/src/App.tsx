@@ -11,6 +11,7 @@ import EventDetailPage from "./pages/EventDetailPage";
 import MyBookingsPage from "./pages/MyBookingsPage";
 import LoginPage from "./pages/LoginPage";
 import CreateEventForm from "./components/events/CreateEventForm";
+import FeedbackPage from "./pages/FeedbackPage";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <MyBookingsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/feedback"
+                element={
+                  <ProtectedRoute>
+                    <FeedbackPage />
                   </ProtectedRoute>
                 }
               />

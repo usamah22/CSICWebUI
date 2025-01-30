@@ -39,15 +39,6 @@ export interface EventBooking {
 
 export type BookingStatus = "Confirmed" | "Cancelled" | "Attended" | "NoShow";
 
-export interface EventFeedback {
-  id: string;
-  userId: string;
-  rating: number;
-  comment: string;
-  createdAt: string;
-  user?: User;
-}
-
 export interface User {
   id: string;
   email: string;
@@ -65,4 +56,27 @@ export interface AuthResponse {
   email: string; // User's email address
   username?: string; // Optional username
   expiresAt?: number; // Optional token expiration timestamp
+}
+
+export interface EventFeedback {
+  id: string;
+  eventId: string;
+  eventTitle: string;
+  userId: string;
+  userFullName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
+export interface CreateFeedbackRequest {
+  eventId: string;
+  rating: number;
+  comment: string;
+}
+
+export interface UpdateFeedbackRequest {
+  id: string;
+  rating: number;
+  comment: string;
 }

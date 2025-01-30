@@ -2,11 +2,14 @@ import axios from "axios";
 import {
   AuthResponse,
   BookingStatus,
+  CreateFeedbackRequest,
   Event,
   EventBooking,
   EventDetail,
+  EventFeedback,
   EventStatus,
   LoginRequest,
+  UpdateFeedbackRequest,
 } from "../types";
 
 import { toast } from "react-hot-toast";
@@ -206,6 +209,44 @@ export const eventsApi = {
       console.error("Error fetching bookings:", error);
       throw error;
     }
+  },
+};
+
+export const feedbackApi = {
+  getEventFeedback: async (eventId: string): Promise<EventFeedback[]> => {
+    const response = await api.get<EventFeedback[]>(
+      `/feedback/events/${eventId}`
+    );
+    return response.data;
+  },
+
+  createFeedback: async (data: {
+    eventId: string;
+    rating: number;
+    comment: string;
+  }): Promise<string> => {
+    const response = await api.post<string>(
+      `/feedback/events/${data.eventId}`,
+      data
+    );
+    return response.data;
+  },
+
+  updateFeedback: async (data: {
+    id: string;
+    rating: number;
+    comment: string;
+  }): Promise<void> => {
+    await api.put(`/feedback/${data.id}`, data);
+  },
+
+  deleteFeedback: async (id: string): Promise<void> => {
+    await api.delete(`/feedback/${id}`);
+  },
+
+  getMyFeedback: async (): Promise<EventFeedback[]> => {
+    const response = await api.get<EventFeedback[]>("/feedback/my");
+    return response.data;
   },
 };
 

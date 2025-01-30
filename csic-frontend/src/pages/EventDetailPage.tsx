@@ -7,6 +7,7 @@ import BookingButton from "../components/bookings/BookingButton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { EventDetail } from "../types";
 import { useAuth } from "../contexts/AuthContext";
+import FeedbackSection from "@/components/feedback/FeedbackSection";
 
 const EventDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -78,6 +79,9 @@ const EventDetailPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <EventDetails event={eventDetailsProps} />
+          <div className="mt-8">
+            <FeedbackSection eventId={event.id} />
+          </div>
         </div>
 
         <div className="lg:col-span-1">

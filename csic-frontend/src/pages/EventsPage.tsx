@@ -32,11 +32,6 @@ const EventsPage: React.FC = () => {
       </div>
 
       <div className="">
-        {/* {events?.map((event) => (
-          <Link key={event.id} to={`/events/${event.id}`}>
-            <EventCard event={event} />
-          </Link>
-        ))} */}
         {viewMode === "list" ? <EventList /> : <EventCalendar />}
       </div>
       <div className="pt-8">
