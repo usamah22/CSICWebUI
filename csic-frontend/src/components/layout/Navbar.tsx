@@ -13,19 +13,33 @@ import { useAuth } from "../../contexts/AuthContext";
 import astonLogo from "../../assets/astonLogo.png";
 
 const navigation = [
+  { name: "Home", href: "/home" },
   { name: "Events", href: "/events" },
+  { name: "Partners", href: "/partners" },
   { name: "My Bookings", href: "/bookings" },
   { name: "Feedback", href: "/feedback" },
+  { name: "Contact", href: "/contact" },
 ];
 
-export const Navbar = () => {
+interface NavbarProps {
+  fullWidth?: boolean;
+}
+
+export const Navbar = ({ fullWidth }: NavbarProps) => {
   const { isAuthenticated, logout, user } = useAuth();
 
   return (
     <Disclosure as="nav" className="bg-white shadow">
       {({ open }) => (
         <>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Conditional container width */}
+          <div
+            className={
+              fullWidth
+                ? "w-full px-4 sm:px-6 lg:px-8" // Full-width layout
+                : "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" // Constrained layout
+            }
+          >
             <div className="flex justify-between h-16">
               <div className="flex">
                 <div className="flex-shrink-0 flex items-center">
@@ -33,7 +47,7 @@ export const Navbar = () => {
                     <img src={astonLogo} alt="Aston Logo" className="h-8" />
                   </Link>
                 </div>
-                <div className="hidden px-14 sm:flex">
+                <div className="hidden sm:flex sm:ml-6">
                   {navigation.map((item) => (
                     <Link
                       key={item.name}

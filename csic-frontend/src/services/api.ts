@@ -15,7 +15,7 @@ import {
 import { toast } from "react-hot-toast";
 
 const api = axios.create({
-  baseURL: "https://localhost:7086/api",
+  baseURL: "http://localhost:5135/api",
 });
 
 api.interceptors.request.use((config) => {
