@@ -7,31 +7,31 @@ const HomePage: React.FC = () => {
     <div className="flex flex-col">
       {/* Hero Section */}
       <motion.section
-  initial={{ opacity: 0 }}
-  whileInView={{ opacity: 1 }}
-  transition={{ duration: 1 }}
-  className="w-full bg-cover bg-center"
-  style={{ backgroundImage: 'url(https://via.placeholder.com/1920x1080)' }}
->
-  {/* Full-width background */}
-  <div className="w-full bg-black bg-opacity-50">
-    {/* Inner content with padding */}
-    <div className="px-4 py-20 text-center sm:px-6 lg:px-8">
-      <h1 className="text-5xl font-bold text-white sm:text-6xl">
-        Welcome to the Computer Science Industry Club
-      </h1>
-      <p className="mt-4 text-xl text-gray-200 sm:text-2xl">
-        Connecting Aston’s Computer Science and Cybersecurity students with top-tier technology companies.
-      </p>
-      <Link
-        to="/events"
-        className="mt-8 inline-block px-8 py-3 bg-[#880090] text-white font-semibold rounded hover:bg-[#7a0082] transition duration-300"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="w-full bg-cover bg-center"
+        style={{ backgroundImage: 'url(/images/code.png)' }} // Updated background image
       >
-        Explore Events
-      </Link>
-    </div>
-  </div>
-</motion.section>
+        {/* Full-width background */}
+        <div className="w-full bg-black bg-opacity-50">
+          {/* Inner content with padding */}
+          <div className="px-4 py-20 text-center sm:px-6 lg:px-8">
+            <h1 className="text-5xl font-bold text-white sm:text-6xl">
+              Welcome to the Computer Science Industry Club
+            </h1>
+            <p className="mt-4 text-xl text-gray-200 sm:text-2xl">
+              Connecting Aston’s Computer Science and Cybersecurity students with top-tier technology companies.
+            </p>
+            <Link
+              to="/events"
+              className="mt-8 inline-block px-8 py-3 bg-[#880090] text-white font-semibold rounded hover:bg-[#7a0082] transition duration-300"
+            >
+              Explore Events
+            </Link>
+          </div>
+        </div>
+      </motion.section>
 
       {/* Wrap the rest of the page in a constrained container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,7 +55,7 @@ const HomePage: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="py-16 bg-gray-50"
+          className="py-16 bg-white"
         >
           <h2 className="text-3xl font-bold text-gray-900 mb-4 sm:text-4xl">
             Why Get Involved?

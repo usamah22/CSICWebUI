@@ -64,7 +64,7 @@ const FeedbackPage = () => {
 
       <div className="grid gap-6">
         {feedback.map((item) => (
-          <div key={item.id} className="bg-white rounded-lg shadow-md p-6">
+          <div key={item.id} className="border rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
             <div className="flex justify-between items-start">
               <div>
                 <h3

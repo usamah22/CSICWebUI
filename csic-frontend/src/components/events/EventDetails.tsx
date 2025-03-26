@@ -37,7 +37,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ event }) => {
   };
 
   return (
-    <article className="bg-white rounded-lg shadow-md overflow-hidden">
+    <article className="border rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
       {event.imageUrl && (
         <div className="relative h-64">
           <img

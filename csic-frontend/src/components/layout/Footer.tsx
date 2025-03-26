@@ -3,12 +3,12 @@ import { cn } from "@/lib/utils";
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-800 text-white py-8 mt-auto">
-      {/* Footer Content */}
+    <footer className="bg-[#7a0082] text-white py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Footer Content */}
         <div className="flex flex-col md:flex-row justify-between items-center">
           {/* Social Media Links */}
-          <div className="mb-4 md:mb-0">
+          <div className="text-center md:text-left">
             <h3 className="text-lg font-semibold">Follow Us</h3>
             <div className="flex space-x-4 mt-2">
               <a
@@ -20,12 +20,20 @@ export const Footer: React.FC = () => {
                 Facebook
               </a>
               <a
-                href="https://twitter.com"
+                href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-blue-400 transition-colors"
               >
-                Twitter
+                LinkedIn
+              </a>
+              <a
+                href="https://x.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-400 transition-colors"
+              >
+                X
               </a>
               <a
                 href="https://instagram.com"
@@ -48,7 +56,7 @@ export const Footer: React.FC = () => {
 
         {/* Copyright Notice */}
         <div className="mt-8 text-center text-sm">
-          &copy; {new Date().getFullYear()} Your Company Name. All rights reserved.
+          &copy; {new Date().getFullYear()} Aston Computer Science Industry Club. All rights reserved.
         </div>
       </div>
     </footer>

@@ -59,7 +59,15 @@ function App() {
                   <EventDetailPage />
                 </Layout>
               }
-            />
+            />         
+            <Route
+              path="/partners"
+              element={
+                <Layout>
+                  <PartnersPage />
+                </Layout>
+              }
+            />              
             <Route
               path="/bookings"
               element={
@@ -80,6 +88,14 @@ function App() {
                 </Layout>
               }
             />
+            <Route
+              path="/contact"
+              element={
+                <Layout>
+                  <ContactPage />
+                </Layout>
+              }
+            />   
             <Route
               path="/login"
               element={

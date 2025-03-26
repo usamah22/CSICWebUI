@@ -10,7 +10,7 @@ interface EventCardProps {
 
 export const EventCard: React.FC<EventCardProps> = ({ event, onBook }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="border rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
       <h3 className="text-lg font-semibold">{event.title}</h3>
       <p className="text-gray-600 mt-2">{event.description}</p>
       <div className="mt-4 space-y-2">

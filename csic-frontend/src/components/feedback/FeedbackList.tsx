@@ -30,7 +30,7 @@ export const FeedbackList: React.FC<FeedbackListProps> = ({
   return (
     <div className="space-y-6">
       {feedback.map((item) => (
-        <div key={item.id} className="bg-white rounded-lg shadow p-6">
+        <div key={item.id} className="border rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
           <div className="flex justify-between items-start">
             <div>
               <div className="flex items-center space-x-2">

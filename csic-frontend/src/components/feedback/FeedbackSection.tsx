@@ -86,7 +86,7 @@ export const FeedbackSection: React.FC<FeedbackSectionProps> = ({
       </div>
 
       {canLeaveFeedback && (
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="border rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold">
               {editingFeedback ? "Edit Your Feedback" : "Leave Feedback"}
