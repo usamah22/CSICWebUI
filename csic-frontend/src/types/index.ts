@@ -9,7 +9,7 @@ export interface Event {
   status: string;
   currentBookings: number;
   createdAt: string;
-  createdById: string;
+  createdById: string; // This field is already present and correct
   availableSpots: number;
   imageUrl?: string; // todo: add imageUrl to Event type
   category?: string;

@@ -58,8 +58,8 @@ const FeedbackPage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">My Feedback</h1>
-        <p className="mt-2 text-gray-600">Manage your event feedback</p>
+        <h1 className="text-4xl font-bold text-gray-900">My Feedback</h1>
+        <p className="mt-4 text-lg text-gray-600">Manage your event feedback</p>
       </div>
 
       <div className="grid gap-6">

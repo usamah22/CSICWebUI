@@ -15,6 +15,7 @@ import LoginPage from "./pages/LoginPage";
 import CreateEventForm from "./components/events/CreateEventForm";
 import FeedbackPage from "./pages/FeedbackPage";
 import ContactPage from "./pages/ContactPage";
+import AdminPanelPage from "./pages/AdminPanelPage"; // Import the Admin Panel Page
 
 const queryClient = new QueryClient();
 
@@ -101,6 +102,16 @@ function App() {
               element={
                 <Layout>
                   <LoginPage />
+                </Layout>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <Layout>
+                  <ProtectedRoute>
+                    <AdminPanelPage />
+                  </ProtectedRoute>
                 </Layout>
               }
             />

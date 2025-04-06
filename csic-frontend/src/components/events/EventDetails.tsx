@@ -17,6 +17,7 @@ interface EventDetailsProps {
     imageUrl?: string;
     status: "upcoming" | "ongoing" | "completed" | "cancelled";
     category?: string;
+    createdById: string;
   };
 }
 

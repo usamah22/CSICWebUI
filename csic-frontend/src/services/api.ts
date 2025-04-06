@@ -61,6 +61,19 @@ export const authApi = {
     const response = await api.post<AuthResponse>("/auth/login", credentials);
     return response.data;
   },
+
+  signup: async (data: { name: string; email: string; password: string }): Promise<AuthResponse> => {
+    try {
+      const response = await api.post<AuthResponse>("/auth/signup", data);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message || "Failed to sign up";
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
 };
 
 const mapEventStatus = (status: any): EventStatus => {

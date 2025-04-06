@@ -29,11 +29,11 @@ export const Navbar = ({ fullWidth }: NavbarProps) => {
   const { isAuthenticated, logout, user } = useAuth();
 
   return (
-    <Disclosure as="nav" className="bg-white shadow">
+    <Disclosure as="nav" className={`shadow ${fullWidth ? "bg-transparent" : "bg-white"}`}>
       {({ open }) => (
         <>
           {/* Navbar Container */}
-          <div className={`container mx-auto px-4 ${fullWidth ? "" : "max-w-7xl"}`}>
+          <div className={`container mx-auto px-4`}>
             {/* Mobile View */}
             <div className="flex flex-col sm:hidden">
               <div className="flex justify-between items-center py-4">
@@ -127,7 +127,7 @@ export const Navbar = ({ fullWidth }: NavbarProps) => {
               <div className="flex items-center">
                 {isAuthenticated ? (
                   <Menu as="div" className="relative ml-3">
-                    <MenuButton className="flex rounded-full bg-none    border- border-black 800">
+                    <MenuButton className="flex rounded-full bg-none border border-black">
                       <span className="sr-only">Open user menu</span>
                       <span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-indigo-100">
                         <span className="flex h-full w-full items-center justify-center text-gray-600">

@@ -22,7 +22,7 @@ const EventsPage: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Events</h1>
+        <h1 className="text-4xl font-bold text-gray-900">Events</h1>
         <Button
           onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
           variant="outline"
@@ -39,7 +39,7 @@ const EventsPage: React.FC = () => {
           to="/events/create"
           className="inline-flex justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-[#880090] hover:bg-[#7a0082] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          Create New Event
+          Request New Event
         </Link>
       </div>
     </div>
