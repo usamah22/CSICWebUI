@@ -3,7 +3,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Layout } from "./components/layout/Layout";
-import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import ProtectedAdminLayout from "./components/layout/ProtectedAdminLayout"; // ✅ NEW
+import { ProtectedRoute } from "./components/auth/ProtectedRoute"; // ✅ Import ProtectedRoute
 
 // Pages
 import HomePage from "./pages/HomePage";
@@ -15,7 +16,10 @@ import LoginPage from "./pages/LoginPage";
 import CreateEventForm from "./components/events/CreateEventForm";
 import FeedbackPage from "./pages/FeedbackPage";
 import ContactPage from "./pages/ContactPage";
-import AdminPanelPage from "./pages/AdminPanelPage"; // Import the Admin Panel Page
+import { ManageUsersPage } from "./pages/admin/ManageUsersPage";
+import { ManageEventsPage } from "./pages/admin/ManageEventsPage";
+import { ManageFeedbackPage } from "./pages/admin/ManageFeedbackPage";
+import { ManageMessagesPage } from "./pages/admin/ManageMessagesPage";
 
 const queryClient = new QueryClient();
 
@@ -60,7 +64,7 @@ function App() {
                   <EventDetailPage />
                 </Layout>
               }
-            />         
+            />
             <Route
               path="/partners"
               element={
@@ -68,7 +72,7 @@ function App() {
                   <PartnersPage />
                 </Layout>
               }
-            />              
+            />
             <Route
               path="/bookings"
               element={
@@ -96,7 +100,7 @@ function App() {
                   <ContactPage />
                 </Layout>
               }
-            />   
+            />
             <Route
               path="/login"
               element={
@@ -105,16 +109,14 @@ function App() {
                 </Layout>
               }
             />
-            <Route
-              path="/admin"
-              element={
-                <Layout>
-                  <ProtectedRoute>
-                    <AdminPanelPage />
-                  </ProtectedRoute>
-                </Layout>
-              }
-            />
+
+            {/* Admin Section */}
+            <Route path="/admin" element={<ProtectedAdminLayout />}>
+              <Route path="users" element={<ManageUsersPage />} />
+              <Route path="events" element={<ManageEventsPage />} />
+              <Route path="feedback" element={<ManageFeedbackPage />} />
+              <Route path="messages" element={<ManageMessagesPage />} />
+            </Route>
           </Routes>
           <Toaster position="top-right" />
         </Router>

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import { authApi } from "../services/api";
 import { AuthResponse } from "../types";
 
@@ -6,37 +7,54 @@ interface User {
   id: string;
   email: string;
   fullName?: string;
+  role: "student" | "staff" | "professional" | "admin";
+}
+
+interface DecodedToken {
+  sub: string;
+  email: string;
+  role?: string; // role might be missing
 }
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, password: string) => Promise<void>; // Add signup function
+  signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const decodeToken = (token: string): User => {
+    const decoded = jwtDecode<DecodedToken>(token);
+
+    const role =
+      decoded.role?.toLowerCase() as User["role"] ?? "student"; // fallback to student if missing
+
+    if (!decoded.role) {
+      console.warn("Role is missing in decoded JWT. Defaulting to 'student'.");
+    }
+
+    return {
+      id: decoded.sub,
+      email: decoded.email,
+      role,
+    };
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
-    const userEmail = localStorage.getItem("userEmail");
-
-    if (token && userId && userEmail) {
+    if (token) {
+      const userFromToken = decodeToken(token);
       setIsAuthenticated(true);
-      setUser({
-        id: userId,
-        email: userEmail,
-      });
+      setUser(userFromToken);
     }
     setIsLoading(false);
   }, []);
@@ -45,14 +63,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const response = await authApi.login({ email, password });
       localStorage.setItem("token", response.token);
-      localStorage.setItem("userId", response.userId);
-      localStorage.setItem("userEmail", response.email);
 
+      const userFromToken = decodeToken(response.token);
       setIsAuthenticated(true);
-      setUser({
-        id: response.userId,
-        email: response.email,
-      });
+      setUser(userFromToken);
     } catch (error) {
       throw error;
     }
@@ -60,15 +74,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const signup = async (name: string, email: string, password: string) => {
     try {
-      const response = await authApi.signup({ name, email, password }); // Call the signup API
+      const response = await authApi.signup({ name, email, password });
       localStorage.setItem("token", response.token);
-      localStorage.setItem("userId", response.userId);
-      localStorage.setItem("userEmail", response.email);
 
+      const userFromToken = decodeToken(response.token);
       setIsAuthenticated(true);
       setUser({
-        id: response.userId,
-        email: response.email,
+        ...userFromToken,
         fullName: name,
       });
     } catch (error) {
@@ -78,8 +90,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("userEmail");
     setIsAuthenticated(false);
     setUser(null);
   };
@@ -90,7 +100,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isAuthenticated,
         user,
         login,
-        signup, 
+        signup,
         logout,
         isLoading,
       }}

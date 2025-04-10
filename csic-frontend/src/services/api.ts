@@ -14,6 +14,7 @@ import {
 
 import { toast } from "react-hot-toast";
 
+
 const api = axios.create({
   baseURL: "http://localhost:5135/api",
 });
@@ -271,5 +272,14 @@ interface EventBookingDto {
   bookedAt: string;
   cancelledAt?: string;
 }
+
+export const userApi = {
+  getUsers: () => api.get("/users").then(res => res.data),
+  updateUserRole: (id: string, role: string) =>
+    api.patch(`/users/${id}/role`, { userId: id, role }),
+  deleteUser: (id: string) => api.delete(`/users/${id}`),
+  createUser: (data: { email: string; password: string; role: string }) =>
+    api.post("/users", data),
+};
 
 export default api;
