@@ -2,6 +2,8 @@ import axios from "axios";
 import {
   AuthResponse,
   BookingStatus,
+  ContactMessage,
+  CreateContactMessageRequest,
   CreateFeedbackRequest,
   Event,
   EventBooking,
@@ -13,7 +15,6 @@ import {
 } from "../types";
 
 import { toast } from "react-hot-toast";
-
 
 const api = axios.create({
   baseURL: "http://localhost:5135/api",
@@ -63,7 +64,11 @@ export const authApi = {
     return response.data;
   },
 
-  signup: async (data: { name: string; email: string; password: string }): Promise<AuthResponse> => {
+  signup: async (data: {
+    name: string;
+    email: string;
+    password: string;
+  }): Promise<AuthResponse> => {
     try {
       const response = await api.post<AuthResponse>("/auth/signup", data);
       return response.data;
@@ -264,6 +269,49 @@ export const feedbackApi = {
   },
 };
 
+export const contactApi = {
+  submitContactMessage: async (
+    data: CreateContactMessageRequest
+  ): Promise<string> => {
+    try {
+      const response = await api.post<string>("/contactmessages", data);
+      toast.success("Your message has been sent successfully!");
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message =
+          error.response?.data?.message || "Failed to send message";
+        toast.error(message);
+        throw new Error(message);
+      }
+      throw error;
+    }
+  },
+
+  getMessages: async (
+    unreadOnly: boolean = false
+  ): Promise<ContactMessage[]> => {
+    try {
+      const response = await api.get<ContactMessage[]>(
+        `/contactmessages?unreadOnly=${unreadOnly}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching contact messages:", error);
+      throw error;
+    }
+  },
+
+  markAsRead: async (id: string): Promise<void> => {
+    try {
+      await api.put(`/contactmessages/${id}/read`);
+    } catch (error) {
+      console.error("Error marking message as read:", error);
+      throw error;
+    }
+  },
+};
+
 interface EventBookingDto {
   id: string;
   eventId: string;
@@ -274,7 +322,7 @@ interface EventBookingDto {
 }
 
 export const userApi = {
-  getUsers: () => api.get("/users").then(res => res.data),
+  getUsers: () => api.get("/users").then((res) => res.data),
   updateUserRole: (id: string, role: string) =>
     api.patch(`/users/${id}/role`, { userId: id, role }),
   deleteUser: (id: string) => api.delete(`/users/${id}`),

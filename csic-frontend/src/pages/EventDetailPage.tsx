@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useEvent } from "../hooks/useEvents";
 import { EventDetails } from "../components/events/EventDetails";
@@ -13,7 +13,7 @@ const EventDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data: event, isLoading, isError, error } = useEvent(id!);
   const { user } = useAuth();
-  const [bookingSuccess, setBookingSuccess] = React.useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
 
   const handleBookingComplete = () => {
     setBookingSuccess(true);
@@ -59,6 +59,7 @@ const EventDetailPage: React.FC = () => {
   const isPastEvent = new Date(event.endDate) < new Date();
   const isEventFull = event.currentBookings >= event.capacity;
   const userBooking = detailEvent.bookings?.find((b) => b.userId === user?.id);
+  const hasUserBooked = !!userBooking;
 
   const eventDetailsProps = {
     id: event.id,
@@ -72,6 +73,7 @@ const EventDetailPage: React.FC = () => {
     availableSpots: event.availableSpots,
     imageUrl: event.imageUrl,
     category: event.category,
+    createdById: event.createdById,
   };
 
   return (
@@ -80,7 +82,11 @@ const EventDetailPage: React.FC = () => {
         <div className="lg:col-span-2">
           <EventDetails event={eventDetailsProps} />
           <div className="mt-8">
-            <FeedbackSection eventId={event.id} />
+            <FeedbackSection
+              eventId={event.id}
+              hasUserBooked={hasUserBooked}
+              isPastEvent={isPastEvent}
+            />
           </div>
         </div>
 
@@ -95,10 +101,11 @@ const EventDetailPage: React.FC = () => {
             )}
             <BookingButton
               eventId={event.id}
-              isUserBooked={!!userBooking}
+              isUserBooked={hasUserBooked}
               bookingId={userBooking?.id}
               isFull={isEventFull}
               isPast={isPastEvent}
+              onBookingComplete={handleBookingComplete}
             />
           </div>
         </div>

@@ -1,19 +1,23 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { authApi } from "../services/api";
-import { AuthResponse } from "../types";
 
 interface User {
   id: string;
   email: string;
   fullName?: string;
-  role: "student" | "staff" | "professional" | "admin";
+  role: "Student" | "Staff" | "Professional" | "Admin"; // Changed to match backend enum case
 }
 
 interface DecodedToken {
   sub: string;
   email: string;
-  role?: string; // role might be missing
+  role?: string;
+  // Add the Microsoft claims format
+  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"?: string;
+  exp?: number;
+  jti?: string;
+  [key: string]: any; // To allow for other properties
 }
 
 interface AuthContextType {
@@ -27,7 +31,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,13 +41,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const decodeToken = (token: string): User => {
     const decoded = jwtDecode<DecodedToken>(token);
 
-    const role =
-      decoded.role?.toLowerCase() as User["role"] ?? "student"; // fallback to student if missing
+    const roleValue =
+      decoded.role ||
+      decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ||
+      decoded.roleKey;
 
-    if (!decoded.role) {
-      console.warn("Role is missing in decoded JWT. Defaulting to 'student'.");
+    // If role is present, use it (matching backend case)
+    let role: User["role"] = "Student"; // Default
+
+    if (roleValue) {
+      // Match the exact case from the backend enum
+      if (roleValue === "Admin") {
+        role = "Admin";
+      } else if (roleValue === "Staff") {
+        role = "Staff";
+      } else if (roleValue === "Professional") {
+        role = "Professional";
+      } else if (roleValue === "Student") {
+        role = "Student";
+      }
     }
 
+    console.log("Extracted role value:", roleValue);
+    console.log("Mapped role:", role);
     return {
       id: decoded.sub,
       email: decoded.email,

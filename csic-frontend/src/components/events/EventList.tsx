@@ -10,9 +10,13 @@ export const EventList: React.FC = () => {
   if (isLoading) return <Spinner />;
   if (error) return <div>Error loading events</div>;
 
+  // Filter out events with "Draft" status
+  const publishedEvents =
+    events?.filter((event) => event.status !== "Draft") || [];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {events?.map((event) => (
+      {publishedEvents.map((event) => (
         <Link key={event.id} to={`/events/${event.id}`}>
           <EventCard key={event.id} event={event} />
         </Link>

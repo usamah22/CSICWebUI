@@ -9,7 +9,7 @@ export interface Event {
   status: string;
   currentBookings: number;
   createdAt: string;
-  createdById: string; // This field is already present and correct
+  createdById: string;
   availableSpots: number;
   imageUrl?: string; // todo: add imageUrl to Event type
   category?: string;
@@ -43,6 +43,7 @@ export interface User {
   id: string;
   email: string;
   fullName: string;
+  role?: "Student" | "Staff" | "Professional" | "Admin";
 }
 
 export interface LoginRequest {
@@ -79,4 +80,20 @@ export interface UpdateFeedbackRequest {
   id: string;
   rating: number;
   comment: string;
+}
+
+// Contact Message Types
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  createdAt: string;
+  isRead: boolean;
+}
+
+export interface CreateContactMessageRequest {
+  name: string;
+  email: string;
+  message: string;
 }

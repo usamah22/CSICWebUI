@@ -1,10 +1,15 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Layout } from "./components/layout/Layout";
-import ProtectedAdminLayout from "./components/layout/ProtectedAdminLayout"; // ✅ NEW
-import { ProtectedRoute } from "./components/auth/ProtectedRoute"; // ✅ Import ProtectedRoute
+import ProtectedAdminLayout from "./components/layout/ProtectedAdminLayout";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
 // Pages
 import HomePage from "./pages/HomePage";
@@ -53,7 +58,11 @@ function App() {
               path="/events/create"
               element={
                 <Layout>
-                  <CreateEventForm />
+                  <ProtectedRoute
+                    allowedRoles={["Admin", "Staff", "Professional"]}
+                  >
+                    <CreateEventForm />
+                  </ProtectedRoute>
                 </Layout>
               }
             />

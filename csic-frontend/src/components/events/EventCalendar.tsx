@@ -30,10 +30,15 @@ const EventCalendar: React.FC = () => {
     const fetchEvents = async () => {
       try {
         const fetchedEvents = await eventsApi.getEvents();
-        setEvents(fetchedEvents);
+
+        // Filter out Draft events
+        const publishedEvents = fetchedEvents.filter(
+          (event) => event.status !== "Draft"
+        );
+        setEvents(publishedEvents);
 
         // Transform events into a format suitable for react-big-calendar
-        const transformedEvents = fetchedEvents.map((event) => ({
+        const transformedEvents = publishedEvents.map((event) => ({
           id: event.id, // Include the event ID for navigation
           title: event.title,
           start: new Date(event.startDate),
@@ -59,9 +64,6 @@ const EventCalendar: React.FC = () => {
     let backgroundColor = "#3174ad"; // Default color
 
     switch (event.status) {
-      case "Draft":
-        backgroundColor = "#ff9800"; // Orange
-        break;
       case "Published":
         backgroundColor = "#4caf50"; // Green
         break;

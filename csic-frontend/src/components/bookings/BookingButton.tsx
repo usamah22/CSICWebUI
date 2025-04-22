@@ -8,6 +8,7 @@ interface BookingButtonProps {
   bookingId?: string;
   isFull: boolean;
   isPast: boolean;
+  onBookingComplete?: () => void;
 }
 
 const BookingButton = ({
@@ -16,6 +17,7 @@ const BookingButton = ({
   bookingId,
   isFull,
   isPast,
+  onBookingComplete,
 }: BookingButtonProps) => {
   const {
     createBooking,
@@ -30,6 +32,10 @@ const BookingButton = ({
         await cancelBooking(bookingId);
       } else {
         await createBooking(eventId);
+        // Call onBookingComplete callback after successful booking
+        if (onBookingComplete) {
+          onBookingComplete();
+        }
       }
     } catch (error) {
       if (error instanceof Error) {

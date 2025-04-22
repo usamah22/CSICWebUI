@@ -5,13 +5,18 @@ import { FeedbackList } from "./FeedbackList";
 import { EventFeedback } from "../../types";
 import { useAuth } from "../../contexts/AuthContext";
 import { Spinner } from "../ui/Spinner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface FeedbackSectionProps {
   eventId: string;
+  hasUserBooked: boolean;
+  isPastEvent: boolean;
 }
 
 export const FeedbackSection: React.FC<FeedbackSectionProps> = ({
   eventId,
+  hasUserBooked,
+  isPastEvent,
 }) => {
   const { user } = useAuth();
   const {
@@ -69,13 +74,14 @@ export const FeedbackSection: React.FC<FeedbackSectionProps> = ({
   }
 
   const userFeedback = feedback?.find((f) => f.userId === user?.id);
-  const canLeaveFeedback = !userFeedback || editingFeedback;
+  const canLeaveFeedback =
+    hasUserBooked && isPastEvent && (!userFeedback || editingFeedback);
 
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Feedback</h2>
-        {userFeedback && !editingFeedback && (
+        {userFeedback && !editingFeedback && hasUserBooked && isPastEvent && (
           <button
             onClick={() => handleEdit(userFeedback)}
             className="text-sm text-blue-600 hover:text-blue-800"
@@ -84,6 +90,23 @@ export const FeedbackSection: React.FC<FeedbackSectionProps> = ({
           </button>
         )}
       </div>
+
+      {!hasUserBooked && (
+        <Alert>
+          <AlertDescription>
+            You need to attend this event to leave feedback
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {hasUserBooked && !isPastEvent && (
+        <Alert>
+          <AlertDescription>
+            You will be able to leave feedback here after you have attended the
+            event
+          </AlertDescription>
+        </Alert>
+      )}
 
       {canLeaveFeedback && (
         <div className="border rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
@@ -117,8 +140,8 @@ export const FeedbackSection: React.FC<FeedbackSectionProps> = ({
         </h3>
         <FeedbackList
           feedback={feedback || []}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
+          onEdit={hasUserBooked && isPastEvent ? handleEdit : undefined}
+          onDelete={hasUserBooked && isPastEvent ? handleDelete : undefined}
           isDeleting={isDeleting}
         />
       </div>
