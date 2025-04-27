@@ -9,37 +9,37 @@ interface Company {
 const companies: Company[] = [
   {
     name: "Goldman Sachs International",
-    logo: "/images/GoldmanSachs.png", // Updated path
+    logo: "/images/GoldmanSachs.png",
     description: "Leading global investment banking, securities, and investment management firm.",
   },
   {
     name: "Tata Consultancy Services (TCS)",
-    logo: "/images/TCS.png", // Updated path
+    logo: "/images/TCS.png", 
     description: "Global leader in IT services, consulting, and business solutions.",
   },
   {
     name: "BlackLine",
-    logo: "/images/Blackline.png", // Updated path
+    logo: "/images/Blackline.png", 
     description: "Modernizing finance and accounting with cloud-based solutions.",
   },
   {
     name: "Majestic",
-    logo: "/images/majestic.png", // Updated path
+    logo: "/images/majestic.png", 
     description: "World's largest link index database for SEO and marketing professionals.",
   },
   {
     name: "Phoebus Software",
-    logo: "/images/phoebus.png", // Updated path
+    logo: "/images/phoebus.png", 
     description: "Specialist software solutions for the financial services sector.",
   },
   {
     name: "Pinsent Masons",
-    logo: "/images/pinsent.png", // Updated path
+    logo: "/images/pinsent.png", 
     description: "International law firm with a focus on innovation and technology.",
   },
   {
     name: "Civico",
-    logo: "/images/civico.png", // Updated path
+    logo: "/images/civico.png", 
     description: "Empowering communities with digital tools and solutions.",
   },
 ];

@@ -11,7 +11,7 @@ export interface Event {
   createdAt: string;
   createdById: string;
   availableSpots: number;
-  imageUrl?: string; // todo: add imageUrl to Event type
+  imageUrl?: string; 
   category?: string;
 }
 export type EventStatus = "Draft" | "Published" | "Cancelled" | "Completed";
@@ -42,7 +42,9 @@ export type BookingStatus = "Confirmed" | "Cancelled" | "Attended" | "NoShow";
 export interface User {
   id: string;
   email: string;
-  fullName: string;
+  firstName?: string;
+  lastName?: string; // Added lastName property
+  fullName?: string;
   role?: "Student" | "Staff" | "Professional" | "Admin";
 }
 

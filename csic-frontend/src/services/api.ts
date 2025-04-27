@@ -326,7 +326,7 @@ export const userApi = {
   updateUserRole: (id: string, role: string) =>
     api.patch(`/users/${id}/role`, { userId: id, role }),
   deleteUser: (id: string) => api.delete(`/users/${id}`),
-  createUser: (data: { email: string; password: string; role: string }) =>
+  createUser: (data: { email: string; password: string; role: string; FirstName: string; LastName: string; }) =>
     api.post("/users", data),
 };
 

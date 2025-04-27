@@ -14,7 +14,7 @@ const ProtectedAdminLayout: React.FC = () => {
   console.log("Admin check - Role:", user?.role);
   console.log("Admin check - Is Admin:", user?.role === "Admin");
 
-  // Check if the user is authenticated and has the Admin role
+  // Checks if the user is authenticated and has the Admin role
   if (!isAuthenticated || !user || user.role !== "Admin") {
     console.log("Access denied to admin page - redirecting to home");
     return <Navigate to="/" replace />;

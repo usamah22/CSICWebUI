@@ -22,7 +22,7 @@ export enum BookingStatusEnum {
   NoShow = 3,
 }
 
-// Define interface for Event type
+// Defining the interface for Event type
 export interface Event {
   id: string;
   title: string;
@@ -40,7 +40,7 @@ export interface Event {
   category?: string;
 }
 
-// Define interface for User type
+// Defining the interface for User type
 export interface User {
   id: string;
   email: string;
@@ -48,7 +48,7 @@ export interface User {
   role?: string;
 }
 
-// Define interface for EventBooking type
+// Defining the interface for EventBooking type
 export interface EventBooking {
   id: string;
   eventId: string;
