@@ -67,8 +67,14 @@ export const ManageUsersPage: React.FC = () => {
   });
 
   const createUserMutation = useMutation({
-    mutationFn: (formData: { email: string; password: string; FirstName: string; LastName: string; role: string }) => {
-      return userApi.createUser(formData);
+    mutationFn: (formData: { email: string; password: string; firstName: string; lastName: string; role: string }) => {
+      return userApi.createUser({
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
@@ -101,10 +107,9 @@ export const ManageUsersPage: React.FC = () => {
       return;
     }
     
-    // Using PascalCase to match DB column names exactly
     const userData = {
-      FirstName: form.firstName,
-      LastName: form.lastName,   
+      firstName: form.firstName,
+      lastName: form.lastName,
       email: form.email,
       password: form.password,
       role: UserRole[form.role]

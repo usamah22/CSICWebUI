@@ -44,19 +44,26 @@ export const SignUpForm: React.FC = () => {
     validationSchema: signUpSchema,
     onSubmit: async (values) => {
       try {
-        const fullName = `${values.firstName} ${values.lastName}`;
-        await signup(fullName, values.email, values.password);
+        await signup({
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          password: values.password,
+        });
         toast.success("Sign-up successful!");
         navigate("/"); // Redirect after successful sign-up
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.error("Sign-up failed:", err);
-        if (err instanceof Error) {
+    
+        if (err?.response?.data?.message) {
+          toast.error(err.response.data.message); // extract backend error 
+        } else if (err instanceof Error) {
           toast.error(err.message);
         } else {
           toast.error("An unexpected error occurred");
         }
       }
-    },
+    },    
   });
 
   return (

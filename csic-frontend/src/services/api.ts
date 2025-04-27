@@ -65,12 +65,13 @@ export const authApi = {
   },
 
   signup: async (data: {
-    name: string;
+    firstName: string; 
+    lastName: string;
     email: string;
     password: string;
   }): Promise<AuthResponse> => {
     try {
-      const response = await api.post<AuthResponse>("/auth/signup", data);
+      const response = await api.post<AuthResponse>("/auth/register", data);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -223,7 +224,7 @@ export const eventsApi = {
   getMyBookings: async (): Promise<EventBooking[]> => {
     try {
       const response = await api.get<EventBooking[]>("/eventbookings/my");
-      return response.data.map(transformBooking); // Apply transformBooking to each booking
+      return response.data.map(transformBooking); // Applies transformBooking to each booking
     } catch (error) {
       console.error("Error fetching bookings:", error);
       throw error;
@@ -326,7 +327,7 @@ export const userApi = {
   updateUserRole: (id: string, role: string) =>
     api.patch(`/users/${id}/role`, { userId: id, role }),
   deleteUser: (id: string) => api.delete(`/users/${id}`),
-  createUser: (data: { email: string; password: string; role: string; FirstName: string; LastName: string; }) =>
+  createUser: (data: { email: string; password: string; role: string; firstName: string; lastName: string; }) =>
     api.post("/users", data),
 };
 

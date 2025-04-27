@@ -24,7 +24,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, password: string) => Promise<void>;
+  signup: (data: { firstName: string; lastName: string; email: string; password: string }) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -94,21 +94,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const signup = async (name: string, email: string, password: string) => {
+  const signup = async (data: { firstName: string; lastName: string; email: string; password: string }) => {
     try {
-      const response = await authApi.signup({ name, email, password });
+      const response = await authApi.signup(data);
       localStorage.setItem("token", response.token);
-
+  
       const userFromToken = decodeToken(response.token);
       setIsAuthenticated(true);
       setUser({
         ...userFromToken,
-        fullName: name,
+        fullName: `${data.firstName} ${data.lastName}`,
       });
     } catch (error) {
       throw error;
     }
   };
+  
 
   const logout = () => {
     localStorage.removeItem("token");
